@@ -27,13 +27,13 @@ pub fn scan_db(db_path: PathBuf) -> Result<()> {
     println!("scanning {}", cf_names.join(", "));
     let db = DB::open_cf(&db_opts, db_path, cf_names.clone())?;
 
-    let mut total_num_records = 0;
-    let mut total_key_size = 0;
-    let mut total_value_size = 0;
+    let mut total_num_records: u64 = 0;
+    let mut total_key_size: u64 = 0;
+    let mut total_value_size: u64 = 0;
     for name in cf_names {
-        let mut num_records = 0;
-        let mut key_size = 0;
-        let mut value_size = 0;
+        let mut num_records: u64 = 0;
+        let mut key_size: u64 = 0;
+        let mut value_size: u64 = 0;
         let cf = db.cf_handle(&name).unwrap();
         let iter = db.iterator_cf(cf, IteratorMode::Start);
         for res in iter {
@@ -44,8 +44,8 @@ pub fn scan_db(db_path: PathBuf) -> Result<()> {
                     return Err(e.into());
                 }
                 Ok((key, value)) => {
-                    key_size += key.len();
-                    value_size += value.len();
+                    key_size += key.len() as u64;
+                    value_size += value.len() as u64;
                 }
             }
         }
